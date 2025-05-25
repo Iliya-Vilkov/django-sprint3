@@ -1,24 +1,54 @@
-from typing import List, Dict
+from datetime import datetime
 
-from django.shortcuts import render
-from django.http import Http404
+from django.shortcuts import get_object_or_404, render
+
+from .models import Category, Post
 
 
 def index(request):
     template_name = 'blog/index.html'
-    context = {'posts': reversed(posts)}
+    post_list = Post.objects.select_related(
+        'category',
+        'location',
+        'author'
+    ).filter(
+        is_published=True,
+        category_is_published=True,
+        pub_date__lte=datetime.now()
+    )[:5]
+    context = {'post_list': post_list}
     return render(request, template_name, context)
 
 
 def post_detail(request, post_id):
     template_name = 'blog/detail.html'
-    if post_id in post_current:
-        context = {'post': post_current[post_id]}
-        return render(request, template_name, context)
-    raise Http404('Нет такой публикации!')
+    context = get_object_or_404((
+        'category',
+        'location',
+        'author'
+    ).filter(
+        is_published=True,
+        category_is_published=True,
+        pub_date__lte=datetime.now()
+    ), post_id=id)
+    return render(request, template_name, context)
 
 
 def category_posts(request, category_slug):
     template_name = 'blog/category.html'
-    context = {'category_slug': category_slug}
+    category = get_object_or_404(
+        Category,
+        slug=category_slug,
+        is_published=True
+    )
+    context = {'category': category,
+               'post_list': (
+                   'category',
+                   'location',
+                   'author'
+               ).filter(
+                   is_published=True,
+                   category_is_published=True,
+                   pub_date__lte=datetime.now()
+               ).filter(category=category)}
     return render(request, template_name, context)
