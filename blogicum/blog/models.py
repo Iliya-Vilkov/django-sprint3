@@ -7,7 +7,10 @@ User = get_user_model()
 class Post(models.Model):
     title = models.CharField(max_length=256, verbose_name='Заголовок')
     text = models.TextField(verbose_name='Текст')
-    pub_date = models.DateTimeField(verbose_name='Дата и время публикации')
+    pub_date = models.DateTimeField(verbose_name='Дата и время публикации',
+                                    help_text='Если установить дату и время в '
+                                    'будущем — можно делать отложенные '
+                                    'публикации.')
     author = models.ForeignKey(
         User,
         on_delete=models.CASCADE,
@@ -27,7 +30,9 @@ class Post(models.Model):
         verbose_name='Категория'
     )
     is_published = models.BooleanField(default=True,
-                                       verbose_name='Опубликовано')
+                                       verbose_name='Опубликовано',
+                                       help_text='Снимите галочку,'
+                                       'чтобы скрыть публикацию.')
     created_at = models.DateTimeField(auto_now_add=True,
                                       verbose_name='Добавлено')
 
@@ -35,11 +40,17 @@ class Post(models.Model):
         verbose_name = 'публикация'
         verbose_name_plural = 'Публикации'
 
+    def __str__(self):
+        return self.title
+
 
 class Category(models.Model):
     title = models.CharField(max_length=256, verbose_name='Заголовок')
     description = models.TextField(verbose_name='Описание')
-    slug = models.SlugField(verbose_name='Идентификатор')
+    slug = models.SlugField(verbose_name='Идентификатор',
+                            help_text='Идентификатор страницы для URL; '
+                            'разрешены символы латиницы, цифры, дефис и '
+                            'подчёркивание.')
     is_published = models.BooleanField(default=True,
                                        verbose_name='Опубликовано')
     created_at = models.DateTimeField(auto_now_add=True,
@@ -48,6 +59,9 @@ class Category(models.Model):
     class Meta:
         verbose_name = 'категория'
         verbose_name_plural = 'Категории'
+
+    def __str__(self):
+        return self.title
 
 
 class Location(models.Model):
@@ -60,3 +74,6 @@ class Location(models.Model):
     class Meta:
         verbose_name = 'местоположение'
         verbose_name_plural = 'Местоположения'
+
+    def __str__(self):
+        return self.name
