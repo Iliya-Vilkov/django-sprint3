@@ -5,37 +5,58 @@ User = get_user_model()
 
 
 class Post(models.Model):
-    title = models.CharField(max_length=256)
-    text = models.TextField()
-    pub_date = models.DateTimeField()
+    title = models.CharField(max_length=256, verbose_name='Заголовок')
+    text = models.TextField(verbose_name='Текст')
+    pub_date = models.DateTimeField(verbose_name='Дата и время публикации')
     author = models.ForeignKey(
         User,
-        on_delete=models.CASCADE
+        on_delete=models.CASCADE,
+        verbose_name='Автор публикации'
     )
     location = models.ForeignKey(
         'Location',
         blank=True,
         null=True,
-        on_delete=models.SET_NULL
+        on_delete=models.SET_NULL,
+        verbose_name='Местоположение'
     )
     category = models.ForeignKey(
         'Category',
         null=True,
-        on_delete=models.SET_NULL
+        on_delete=models.SET_NULL,
+        verbose_name='Категория'
     )
-    is_published = models.BooleanField(default=True)
-    created_at = models.DateTimeField(auto_now_add=True)
+    is_published = models.BooleanField(default=True,
+                                       verbose_name='Опубликовано')
+    created_at = models.DateTimeField(auto_now_add=True,
+                                      verbose_name='Добавлено')
+
+    class Meta:
+        verbose_name = 'публикация'
+        verbose_name_plural = 'Публикации'
 
 
 class Category(models.Model):
-    title = models.CharField(max_length=256)
-    description = models.TextField()
-    slug = models.SlugField()
-    is_published = models.BooleanField(default=True)
-    created_at = models.DateTimeField(auto_now_add=True)
+    title = models.CharField(max_length=256, verbose_name='Заголовок')
+    description = models.TextField(verbose_name='Описание')
+    slug = models.SlugField(verbose_name='Идентификатор')
+    is_published = models.BooleanField(default=True,
+                                       verbose_name='Опубликовано')
+    created_at = models.DateTimeField(auto_now_add=True,
+                                      verbose_name='Добавлено')
+
+    class Meta:
+        verbose_name = 'категория'
+        verbose_name_plural = 'Категории'
 
 
 class Location(models.Model):
-    name = models.CharField(max_length=256)
-    is_published = models.BooleanField(default=True)
-    created_at = models.DateTimeField(auto_now_add=True)
+    name = models.CharField(max_length=256, verbose_name='Название места')
+    is_published = models.BooleanField(default=True,
+                                       verbose_name='Опубликовано')
+    created_at = models.DateTimeField(auto_now_add=True,
+                                      verbose_name='Добавлено')
+
+    class Meta:
+        verbose_name = 'местоположение'
+        verbose_name_plural = 'Местоположения'
