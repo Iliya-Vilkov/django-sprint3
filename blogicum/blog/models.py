@@ -31,7 +31,7 @@ class Post(models.Model):
     )
     is_published = models.BooleanField(default=True,
                                        verbose_name='Опубликовано',
-                                       help_text='Снимите галочку,'
+                                       help_text='Снимите галочку, '
                                        'чтобы скрыть публикацию.')
     created_at = models.DateTimeField(auto_now_add=True,
                                       verbose_name='Добавлено')
@@ -47,12 +47,15 @@ class Post(models.Model):
 class Category(models.Model):
     title = models.CharField(max_length=256, verbose_name='Заголовок')
     description = models.TextField(verbose_name='Описание')
-    slug = models.SlugField(verbose_name='Идентификатор',
+    slug = models.SlugField(unique=True,
+                            verbose_name='Идентификатор',
                             help_text='Идентификатор страницы для URL; '
                             'разрешены символы латиницы, цифры, дефис и '
                             'подчёркивание.')
     is_published = models.BooleanField(default=True,
-                                       verbose_name='Опубликовано')
+                                       verbose_name='Опубликовано',
+                                       help_text='Снимите галочку, '
+                                       'чтобы скрыть публикацию.')
     created_at = models.DateTimeField(auto_now_add=True,
                                       verbose_name='Добавлено')
 

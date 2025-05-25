@@ -13,7 +13,7 @@ def index(request):
         'author'
     ).filter(
         is_published=True,
-        category_is_published=True,
+        category__is_published=True,
         pub_date__lte=datetime.now()
     )[:5]
     context = {'post_list': post_list}
@@ -22,15 +22,12 @@ def index(request):
 
 def post_detail(request, post_id):
     template_name = 'blog/detail.html'
-    context = get_object_or_404((
-        'category',
-        'location',
-        'author'
-    ).filter(
-        is_published=True,
-        category_is_published=True,
-        pub_date__lte=datetime.now()
-    ), post_id=id)
+    post = get_object_or_404(Post,
+                             pub_date__lte=datetime.now(),
+                             is_published=True,
+                             category__is_published=True,
+                             id=post_id)
+    context = {'post': post}
     return render(request, template_name, context)
 
 
@@ -41,14 +38,15 @@ def category_posts(request, category_slug):
         slug=category_slug,
         is_published=True
     )
+    post_list = Post.objects.select_related(
+        'category',
+        'location',
+        'author'
+    ).filter(
+        is_published=True,
+        category__is_published=True,
+        pub_date__lte=datetime.now()
+    ).filter(category=category)
     context = {'category': category,
-               'post_list': (
-                   'category',
-                   'location',
-                   'author'
-               ).filter(
-                   is_published=True,
-                   category_is_published=True,
-                   pub_date__lte=datetime.now()
-               ).filter(category=category)}
+               'post_list': post_list}
     return render(request, template_name, context)
