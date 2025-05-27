@@ -4,6 +4,9 @@ from django.shortcuts import get_object_or_404, render
 
 from .models import Category, Post
 
+def get_post(request):
+    
+
 
 def index(request):
     template_name = 'blog/index.html'
